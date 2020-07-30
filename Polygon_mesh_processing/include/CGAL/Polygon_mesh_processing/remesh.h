@@ -18,6 +18,7 @@
 #include <CGAL/disable_warnings.h>
 
 #include <CGAL/Polygon_mesh_processing/internal/Isotropic_remeshing/remesh_impl.h>
+#include <CGAL/Polygon_mesh_processing/internal/Isotropic_remeshing/Uniform_sizing_field.h>
 
 #include <CGAL/Polygon_mesh_processing/internal/named_function_params.h>
 #include <CGAL/Polygon_mesh_processing/internal/named_params_helper.h>
@@ -180,6 +181,21 @@ void isotropic_remeshing(const FaceRange& faces
                        , PolygonMesh& pmesh
                        , const NamedParameters& np)
 {
+  isotropic_remeshing(faces,
+    CGAL::Uniform_sizing_field<PolygonMesh>(target_edge_length, pmesh),
+    pmesh,
+    np);
+}
+
+template<typename PolygonMesh
+       , typename FaceRange
+       , typename SizingFunction
+       , typename NamedParameters>
+void isotropic_remeshing(const FaceRange& faces
+                       , const SizingFunction& sizing
+                       , PolygonMesh& pmesh
+                       , const NamedParameters& np)
+{
   if (boost::begin(faces)==boost::end(faces))
     return;
 
@@ -242,12 +258,10 @@ void isotropic_remeshing(const FaceRange& faces
 #endif
     ) ) );
 
-  double low = 4. / 5. * target_edge_length;
-  double high = 4. / 3. * target_edge_length;
-
 #if !defined(CGAL_NO_PRECONDITIONS)
   if(protect)
   {
+    double high = 4. / 3. * target_edge_length;
     std::string msg("Isotropic remeshing : protect_constraints cannot be set to");
     msg.append(" true with constraints larger than 4/3 * target_edge_length.");
     msg.append(" Remeshing aborted.");
@@ -291,11 +305,10 @@ void isotropic_remeshing(const FaceRange& faces
 #ifdef CGAL_PMP_REMESHING_VERBOSE
     std::cout << " * Iteration " << (i + 1) << " *" << std::endl;
 #endif
-    if (target_edge_length>0)
-    {
-      remesher.split_long_edges(high);
-      remesher.collapse_short_edges(low, high, collapse_constraints);
-    }
+
+    remesher.split_long_edges(sizing);
+    remesher.collapse_short_edges(sizing, collapse_constraints);
+
     remesher.equalize_valences();
     remesher.tangential_relaxation(smoothing_1d, nb_laplacian);
     if ( choose_parameter(get_parameter(np, internal_np::do_project), true) )
