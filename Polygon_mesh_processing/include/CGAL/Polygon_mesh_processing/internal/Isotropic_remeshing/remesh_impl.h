@@ -479,7 +479,7 @@ namespace internal {
       typedef typename Boost_bimap::value_type                       long_edge;
 
 #ifdef CGAL_PMP_REMESHING_VERBOSE
-      std::cout << "Split long edges (" << high << ")..." << std::endl;
+      std::cout << "Split long edges..." << std::endl;
 #endif
       //collect long edges
       Boost_bimap long_edges;
@@ -618,7 +618,7 @@ namespace internal {
       typedef typename Boost_bimap::value_type                    short_edge;
 
 #ifdef CGAL_PMP_REMESHING_VERBOSE
-      std::cout << "Collapse short edges (" << low << ", " << high << ")..."
+      std::cout << "Collapse short edges..."
                 << std::endl;
 #endif
 #ifdef CGAL_PMP_REMESHING_VERBOSE_PROGRESS
