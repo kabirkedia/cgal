@@ -77,7 +77,7 @@ public:
   
   boost::optional<FT> is_protected_constraint_too_long(const halfedge_descriptor& h) const
   {
-    const FT sqlen = 4./3. *sqlength(h);
+    const FT sqlen = 16./9. *sqlength(h);
     if(sqlen > m_sq_long)
       return sqlen;
     else
@@ -87,7 +87,7 @@ public:
   boost::optional<FT> is_protected_constraint_too_long(const vertex_descriptor& va,
                                                        const vertex_descriptor& vb) const
   {
-    const FT sqlen = 4./3. * sqlength(va, vb);
+    const FT sqlen = 16./9. * sqlength(va, vb);
     if (sqlen > m_sq_long)
       return sqlen;
     else
