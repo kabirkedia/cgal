@@ -216,13 +216,11 @@ void Polyhedron_demo_detect_sharp_edges_plugin::detectSharpCorners(bool input_di
         typedef boost::property_map<FaceGraph, CGAL::vertex_incident_patches_t < int> >::type VIP;
         boost::property_map<FaceGraph, CGAL::vertex_is_feature_t>::type vif
                 = get(CGAL::vertex_is_feature, *pMesh);
-        boost::graph_traits<FaceGraph>::vertex_descriptor v = *CGAL::vertices(*pMesh).begin();
-        PMP::detect_sharp_corners(angle, vif, *pMesh);
-        std::size_t sharp_corners_counter = 0;
-        if (get(vif, v) && v != *CGAL::vertices(*pMesh).end()) {
-            ++sharp_corners_counter;
-        }
-        v++;
+        boost::property_map<FaceGraph, CGAL::edge_is_feature_t>::type eif
+                = get(CGAL::edge_is_feature, *pMesh);
+
+        PMP::detect_sharp_edges(*pMesh, angle, eif);
+        PMP::detect_sharp_corners(angle, vif, eif, *pMesh);
 
         //update item
         item->setItemIsMulticolor(true);
