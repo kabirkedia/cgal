@@ -33,12 +33,22 @@ public:
     void init(QMainWindow *mainWindow, Scene_interface *scene_interface, Messages_interface *) {
         this->scene = scene_interface;
         this->mw = mainWindow;
-        actionSharEdges = new QAction("Detect Sharp Features", mw);
-        actionSharEdges->setObjectName("detectSharpFeaturesAction");
-        if (actionSharEdges) {
-            connect(actionSharEdges, SIGNAL(triggered()),
-                    this, SLOT(detectSharpEdgesWithInputDialog()));
 
+        actionSharEdges = new QAction(tr("Detect Sharp Edges"), mw);
+        actionSharEdges->setProperty("subMenuName", "Detect Features");
+        actionSharEdges->setObjectName("detectSharpFeaturesAction");
+
+        actionSharpCorners = new QAction("Detect Sharp Corners", mw);
+        actionSharpCorners->setProperty("subMenuName", "Detect Features");
+        actionSharpCorners->setObjectName("actionSharpCornersAction");
+
+        if (actionSharEdges) {
+          connect(actionSharEdges, SIGNAL(triggered()),
+            this, SLOT(detectSharpEdgesWithInputDialog()));
+        }
+        if (actionSharpCorners) {
+          connect(actionSharpCorners, SIGNAL(triggered()),
+                  this, SLOT(detectSharpCornersWithInputDialog()));
         }
     }
 
@@ -53,15 +63,14 @@ public:
     }
 
     QList<QAction*> actions() const {
-        return QList<QAction*>() << actionSharEdges;
+        return QList<QAction*>() << actionSharEdges << actionSharpCorners;
     }
 
-public
-    Q_SLOTS:
-
+public Q_SLOTS:
     void detectSharpEdges(bool input_dialog = false, double angle = 60);
     void detectSharpCorners(bool input_dialog = false, double angle = 60);
     void detectSharpEdgesWithInputDialog();
+    void detectSharpCornersWithInputDialog();
 
 protected:
     Kernel::Vector_3 facet_normal(face_descriptor f);
@@ -70,13 +79,17 @@ protected:
 
 private:
     QAction *actionSharEdges;
+    QAction *actionSharpCorners;
     CGAL::Three::Scene_interface *scene;
     QMainWindow *mw;
 }; // end Polyhedron_demo_detect_sharp_edges_plugin
 
 void Polyhedron_demo_detect_sharp_edges_plugin::detectSharpEdgesWithInputDialog() {
-    detectSharpEdges(true);
-    detectSharpCorners(true);
+  detectSharpEdges(true);
+}
+
+void Polyhedron_demo_detect_sharp_edges_plugin::detectSharpCornersWithInputDialog() {
+  detectSharpCorners(true);
 }
 
 namespace PMP = CGAL::Polygon_mesh_processing;
