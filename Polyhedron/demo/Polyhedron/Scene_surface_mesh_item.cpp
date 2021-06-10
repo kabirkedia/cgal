@@ -846,6 +846,12 @@ void Scene_surface_mesh_item::drawPoints(CGAL::Three::Viewer_interface *viewer) 
   getPointContainer(0)->setSelected(is_selected);
   getPointContainer(0)->setColor(color());
   getPointContainer(0)->draw( viewer, true);
+  if (d->has_feature_corners)
+  {
+    getPointContainer(1)->setSelected(false);
+    getPointContainer(1)->setColor(QColor(Qt::cyan));
+    getPointContainer(1)->draw(viewer, true);
+  }
 }
 
 void
