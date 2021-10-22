@@ -90,7 +90,7 @@ int main()
   Point_vector points;
 
   // Load point set from a file.
-  const std::string input_file("data/cube.pwn");
+  const std::string input_file(CGAL::data_file_path("points_3/cube.pwn"));
     std::ifstream input_stream(input_file.c_str());
   if (input_stream.fail()) {
     std::cerr << "Failed open file \'" << input_file << "\'" << std::endl;
@@ -101,8 +101,8 @@ int main()
 
   CGAL::Timer t;
   t.start();
-  if (!CGAL::read_points(input_file.c_str(), std::back_inserter(points),
-                         CGAL::parameters::point_map(Point_map()).normal_map(Normal_map()))) {
+  if (!CGAL::IO::read_points(input_file.c_str(), std::back_inserter(points),
+                             CGAL::parameters::point_map(Point_map()).normal_map(Normal_map()))) {
 
     std::cerr << "Error: cannot read file " << input_file << std::endl;
     return EXIT_FAILURE;
@@ -175,7 +175,7 @@ int main()
   std::cout << "Saving...";
   t.reset();
   const std::string& output_file("data/cube_result.off");
-  if (CGAL::write_OFF(output_file, model))
+  if (CGAL::IO::write_OFF(output_file, model))
     std::cout << " Done. Saved to " << output_file << ". Time: " << t.time() << " sec." << std::endl;
   else {
     std::cerr << " Failed saving file." << std::endl;
